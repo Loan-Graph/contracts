@@ -10,7 +10,28 @@ type DeploymentRecord = {
   deployedAt: string;
 };
 
+const SUPPORTED_NETWORKS: Record<string, number> = {
+  creditcoinTestnet: 102031,
+  creditcoinMainnet: 102030
+};
+
+function assertSupportedNetwork() {
+  const expectedChainId = SUPPORTED_NETWORKS[network.name];
+  if (!expectedChainId) {
+    throw new Error(`Unsupported network '${network.name}'. Allowed: ${Object.keys(SUPPORTED_NETWORKS).join(", ")}`);
+  }
+  const configuredChainId = Number(network.config.chainId ?? 0);
+  if (configuredChainId !== expectedChainId) {
+    throw new Error(
+      `Chain ID mismatch for '${network.name}': expected ${expectedChainId}, got ${configuredChainId}`
+    );
+  }
+}
+
 function saveDeployment(networkName: string, deployment: DeploymentRecord) {
+  if (!SUPPORTED_NETWORKS[networkName]) {
+    throw new Error(`Refusing to persist deployment for unsupported network '${networkName}'`);
+  }
   const filePath = path.resolve(__dirname, "..", "deployments", "addresses.json");
   const existing = fs.existsSync(filePath)
     ? JSON.parse(fs.readFileSync(filePath, "utf-8"))
@@ -21,6 +42,8 @@ function saveDeployment(networkName: string, deployment: DeploymentRecord) {
 }
 
 async function main() {
+  assertSupportedNetwork();
+
   const adminAddress = process.env.ADMIN_ADDRESS;
   if (!adminAddress) {
     throw new Error("ADMIN_ADDRESS is required in environment");

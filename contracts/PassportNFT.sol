@@ -52,6 +52,9 @@ contract PassportNFT is Initializable, ERC721Upgradeable, AccessControlUpgradeab
 
     function mintPassport(bytes32 borrowerId, address recipient) external onlyRoleCustom(MINTER_ROLE) returns (uint256) {
         if (recipient == address(0)) revert InvalidRecipient();
+        if (borrowerId == bytes32(0)) revert BorrowerNotFound(borrowerId);
+        ILoanRegistry.Borrower memory b = loanRegistry.getBorrower(borrowerId);
+        if (b.borrowerId == bytes32(0)) revert BorrowerNotFound(borrowerId);
         if (borrowerToPassportId[borrowerId] != 0) revert PassportAlreadyExists(borrowerId);
 
         tokenIdCounter += 1;

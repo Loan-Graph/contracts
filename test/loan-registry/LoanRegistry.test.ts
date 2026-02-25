@@ -117,6 +117,12 @@ describe("LoanRegistry", function () {
     ).to.be.revertedWithCustomError(loanRegistry, "ContractPaused");
   });
 
+  it("emits pause and unpause events", async function () {
+    const { loanRegistry, admin } = await deployCore();
+    await expect(loanRegistry.connect(admin).pause()).to.emit(loanRegistry, "Paused").withArgs(admin.address);
+    await expect(loanRegistry.connect(admin).unpause()).to.emit(loanRegistry, "Unpaused").withArgs(admin.address);
+  });
+
   it("prevents another lender from mutating someone else's loan", async function () {
     const { loanRegistry, lender, other } = await deployCore();
     const lenderRole = await loanRegistry.LENDER_ROLE();

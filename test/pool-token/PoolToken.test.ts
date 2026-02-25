@@ -57,4 +57,10 @@ describe("PoolToken", function () {
     await poolToken.connect(manager).mint(investor.address, 10n);
     expect(await poolToken.balanceOf(investor.address)).to.eq(10n);
   });
+
+  it("emits pause and unpause events", async function () {
+    const { poolToken, admin } = await deployCore();
+    await expect(poolToken.connect(admin).pause()).to.emit(poolToken, "Paused").withArgs(admin.address);
+    await expect(poolToken.connect(admin).unpause()).to.emit(poolToken, "Unpaused").withArgs(admin.address);
+  });
 });

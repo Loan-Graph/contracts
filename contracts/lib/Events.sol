@@ -31,4 +31,6 @@ abstract contract Events {
     event PoolMint(address indexed to, uint256 amount);
     event PoolBurn(address indexed from, uint256 amount);
     event BorrowerLinkedToPassport(bytes32 indexed borrowerId, uint256 indexed tokenId);
+    event Paused(address indexed account);
+    event Unpaused(address indexed account);
 }

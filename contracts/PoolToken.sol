@@ -56,11 +56,13 @@ contract PoolToken is Initializable, ERC20Upgradeable, AccessControlUpgradeable,
     function pause() external onlyRoleCustom(ADMIN_ROLE) {
         if (paused) revert ContractPaused();
         paused = true;
+        emit Paused(msg.sender);
     }
 
     function unpause() external onlyRoleCustom(ADMIN_ROLE) {
         if (!paused) revert ContractNotPaused();
         paused = false;
+        emit Unpaused(msg.sender);
     }
 
     function mint(address to, uint256 amount) external onlyRoleCustom(MANAGER_ROLE) whenNotPaused {

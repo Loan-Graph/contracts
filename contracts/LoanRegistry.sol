@@ -66,11 +66,13 @@ contract LoanRegistry is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     function pause() external onlyRoleCustom(ADMIN_ROLE) {
         if (paused) revert ContractPaused();
         paused = true;
+        emit Paused(msg.sender);
     }
 
     function unpause() external onlyRoleCustom(ADMIN_ROLE) {
         if (!paused) revert ContractNotPaused();
         paused = false;
+        emit Unpaused(msg.sender);
     }
 
     function registerLoan(
