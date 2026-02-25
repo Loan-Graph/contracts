@@ -23,6 +23,13 @@
 ## Deploy
 - Testnet: `npm run deploy:testnet`
 - Mainnet: `npm run deploy:mainnet`
+- Makefile wrapper:
+  - `make deploy-testnet`
+  - `make deploy-mainnet`
+  - `make deploy NETWORK=creditcoinTestnet`
+
+Deployments are stored in:
+- `deployments/addresses.json` (auto-updated by `scripts/deploy.ts`)
 
 Set these `.env` fields before deploying:
 - `DEPLOYER_PRIVATE_KEY`
@@ -38,3 +45,5 @@ Set these `.env` fields before deploying:
 - `contracts/CreditScoreEngine.sol`
 - `contracts/PassportNFT.sol`
 - `contracts/PoolToken.sol`
+- `deployments/addresses.json`: deployed proxy addresses by network
+- `Makefile`: command shortcuts for compile/test/deploy flows

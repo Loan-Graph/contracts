@@ -1,4 +1,24 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers, network, upgrades } from "hardhat";
+import fs from "fs";
+import path from "path";
+
+type DeploymentRecord = {
+  LoanRegistry: string;
+  CreditScoreEngine: string;
+  PassportNFT: string;
+  PoolToken: string;
+  deployedAt: string;
+};
+
+function saveDeployment(networkName: string, deployment: DeploymentRecord) {
+  const filePath = path.resolve(__dirname, "..", "deployments", "addresses.json");
+  const existing = fs.existsSync(filePath)
+    ? JSON.parse(fs.readFileSync(filePath, "utf-8"))
+    : {};
+
+  existing[networkName] = deployment;
+  fs.writeFileSync(filePath, `${JSON.stringify(existing, null, 2)}\n`, "utf-8");
+}
 
 async function main() {
   const adminAddress = process.env.ADMIN_ADDRESS;
@@ -42,10 +62,21 @@ async function main() {
   });
   await poolToken.waitForDeployment();
 
-  console.log("LoanRegistry Proxy:", await loanRegistry.getAddress());
-  console.log("CreditScoreEngine Proxy:", await creditScoreEngine.getAddress());
-  console.log("PassportNFT Proxy:", await passportNFT.getAddress());
-  console.log("PoolToken Proxy:", await poolToken.getAddress());
+  const deployment: DeploymentRecord = {
+    LoanRegistry: await loanRegistry.getAddress(),
+    CreditScoreEngine: await creditScoreEngine.getAddress(),
+    PassportNFT: await passportNFT.getAddress(),
+    PoolToken: await poolToken.getAddress(),
+    deployedAt: new Date().toISOString()
+  };
+
+  saveDeployment(network.name, deployment);
+
+  console.log("LoanRegistry Proxy:", deployment.LoanRegistry);
+  console.log("CreditScoreEngine Proxy:", deployment.CreditScoreEngine);
+  console.log("PassportNFT Proxy:", deployment.PassportNFT);
+  console.log("PoolToken Proxy:", deployment.PoolToken);
+  console.log(`Saved deployment to deployments/addresses.json under '${network.name}'`);
 }
 
 main().catch((error) => {
