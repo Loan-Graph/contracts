@@ -1,10 +1,10 @@
 {
   "creditcoinTestnet": {
-    "LoanRegistry": "0x3c20Fd0B57711a199776B53C2F24385563d1670F",
-    "CreditScoreEngine": "0x505F02984a93FA0a191572Bc39035148071a693D",
-    "PassportNFT": "0xB9224CFc9D760Cff6c55e74d77248AA5Cb2C4E40",
-    "PoolToken": "0x114dac28b091F2d73dF6509E4063D6553eB36fa2",
-    "deployedAt": "2026-02-25T00:00:00.000Z"
+    "LoanRegistry": "0x0567d7EA24AaCAb6EfAed4bc4d9695CFdbF5Cf30",
+    "CreditScoreEngine": "0xE8Ed45FC5c98147bF54CFEb621B9a4B47B7aC03b",
+    "PassportNFT": "0xA594558DB0154bA88A98F46E899abD3b37D50E73",
+    "PoolToken": "0x70Dc6a217a6321B28a6E302Ce07f5f1a36C4E21b",
+    "deployedAt": "2026-02-25T13:09:46.628Z"
   },
   "creditcoinMainnet": {
     "LoanRegistry": "",
