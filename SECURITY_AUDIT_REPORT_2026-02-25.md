@@ -4,7 +4,7 @@
 - Auditor: Codex (internal pass)
 - Scope: Solidity contracts + deploy config
 - Severity model: Conservative
-- Codebase root: `/Users/bankat/Documents/projects/loangraph/contracts`
+- Codebase root: `loangraph/contracts`
 - Test status during audit: `26 passing` (`npm test`)
 
 ## Executive Summary
@@ -36,9 +36,9 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-01: Cross-lender unauthorized mutation of loan state
 - Severity: **High**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/LoanRegistry.sol:109`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/LoanRegistry.sol:131`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/LoanRegistry.sol:93`
+  - `loangraph/contracts/contracts/LoanRegistry.sol:109`
+  - `loangraph/contracts/contracts/LoanRegistry.sol:131`
+  - `loangraph/contracts/contracts/LoanRegistry.sol:93`
 - Description:
   - `recordRepayment` and `markDefault` only check `LENDER_ROLE`; they do not check `msg.sender == loan.lender`.
   - Any lender can repay/default a loan created by a different lender.
@@ -58,9 +58,9 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-02: Unbounded repayment enables score inflation and accounting distortion
 - Severity: **High**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/LoanRegistry.sol:117`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/LoanRegistry.sol:120`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/CreditScoreEngine.sol:45`
+  - `loangraph/contracts/contracts/LoanRegistry.sol:117`
+  - `loangraph/contracts/contracts/LoanRegistry.sol:120`
+  - `loangraph/contracts/contracts/CreditScoreEngine.sol:45`
 - Description:
   - `recordRepayment` allows arbitrary repayment amount, including overpayment far beyond principal.
   - `cumulativeRepaid` can exceed `cumulativeBorrowed` materially.
@@ -78,8 +78,8 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-03: Passport can be minted for nonexistent/invalid borrower identity
 - Severity: **Medium**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/PassportNFT.sol:53`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/PassportNFT.sol:55`
+  - `loangraph/contracts/contracts/PassportNFT.sol:53`
+  - `loangraph/contracts/contracts/PassportNFT.sol:55`
 - Description:
   - `mintPassport` does not validate `borrowerId != bytes32(0)` and does not verify borrower has registry history.
 - Impact:
@@ -92,7 +92,7 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-04: Pool manager can burn tokens from any holder without holder consent
 - Severity: **Medium**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/PoolToken.sol:75`
+  - `loangraph/contracts/contracts/PoolToken.sol:75`
 - Description:
   - `MANAGER_ROLE` can call `burn(from, amount)` for any address; no allowance/consent model.
 - Impact:
@@ -107,11 +107,11 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-05: Upgrade/admin governance is operationally centralized by default
 - Severity: **Medium**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:24`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:30`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:37`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:48`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:59`
+  - `loangraph/contracts/scripts/deploy.ts:24`
+  - `loangraph/contracts/scripts/deploy.ts:30`
+  - `loangraph/contracts/scripts/deploy.ts:37`
+  - `loangraph/contracts/scripts/deploy.ts:48`
+  - `loangraph/contracts/scripts/deploy.ts:59`
 - Description:
   - All contracts initialize with one `adminAddress` controlling default admin and upgrader role inheritance model.
   - No enforced multisig/timelock path in deploy workflow.
@@ -125,8 +125,8 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-06: Missing pause/unpause events reduce incident observability
 - Severity: **Low**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/LoanRegistry.sol:66`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/contracts/PoolToken.sol:56`
+  - `loangraph/contracts/contracts/LoanRegistry.sol:66`
+  - `loangraph/contracts/contracts/PoolToken.sol:56`
 - Description:
   - Pause state changes are not emitted as events.
 - Impact:
@@ -137,8 +137,8 @@ Overall risk posture (current state): **Medium-High**.
 ### LG-07: Deployment address persistence can overwrite wrong environment entry
 - Severity: **Low**
 - Affected:
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:13`
-  - `/Users/bankat/Documents/projects/loangraph/contracts/scripts/deploy.ts:73`
+  - `loangraph/contracts/scripts/deploy.ts:13`
+  - `loangraph/contracts/scripts/deploy.ts:73`
 - Description:
   - Address storage key is based on `network.name`; no chain-id validation guard before write.
 - Impact:
