@@ -111,8 +111,11 @@ contract LoanRegistry is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
 
         Loan storage loan = loans[loanId];
         if (loan.loanId == bytes32(0)) revert LoanNotFound(loanId);
+        if (loan.lender != msg.sender) revert UnauthorizedLenderForLoan(loanId, msg.sender, loan.lender);
         if (loan.status == LoanStatus.Repaid) revert LoanAlreadyRepaid(loanId);
         if (loan.status == LoanStatus.Defaulted) revert LoanAlreadyDefaulted(loanId);
+        uint256 outstanding = loan.principal - loan.amountRepaid;
+        if (amount > outstanding) revert RepaymentExceedsOutstanding(loanId, amount, outstanding);
 
         loan.amountRepaid += amount;
 
@@ -131,6 +134,7 @@ contract LoanRegistry is Initializable, AccessControlUpgradeable, UUPSUpgradeabl
     function markDefault(bytes32 loanId) external onlyRoleCustom(LENDER_ROLE) whenNotPaused {
         Loan storage loan = loans[loanId];
         if (loan.loanId == bytes32(0)) revert LoanNotFound(loanId);
+        if (loan.lender != msg.sender) revert UnauthorizedLenderForLoan(loanId, msg.sender, loan.lender);
         if (loan.status == LoanStatus.Repaid) revert LoanAlreadyRepaid(loanId);
         if (loan.status == LoanStatus.Defaulted) revert LoanAlreadyDefaulted(loanId);
 

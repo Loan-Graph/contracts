@@ -116,4 +116,38 @@ describe("LoanRegistry", function () {
       loanRegistry.connect(lender).registerLoan(lHash, bHash, 100_000n, 2200, maturity, "USD")
     ).to.be.revertedWithCustomError(loanRegistry, "ContractPaused");
   });
+
+  it("prevents another lender from mutating someone else's loan", async function () {
+    const { loanRegistry, lender, other } = await deployCore();
+    const lenderRole = await loanRegistry.LENDER_ROLE();
+    await loanRegistry.grantRole(lenderRole, other.address);
+
+    const bHash = borrowerHash("borrower-7");
+    const lHash = loanHash("loan-7");
+    const maturity = await maturityAfter(90);
+
+    await loanRegistry.connect(lender).registerLoan(lHash, bHash, 300_000n, 2200, maturity, "USD");
+
+    await expect(loanRegistry.connect(other).recordRepayment(lHash, 10_000n))
+      .to.be.revertedWithCustomError(loanRegistry, "UnauthorizedLenderForLoan")
+      .withArgs(lHash, other.address, lender.address);
+
+    await expect(loanRegistry.connect(other).markDefault(lHash))
+      .to.be.revertedWithCustomError(loanRegistry, "UnauthorizedLenderForLoan")
+      .withArgs(lHash, other.address, lender.address);
+  });
+
+  it("reverts when repayment exceeds outstanding principal", async function () {
+    const { loanRegistry, lender } = await deployCore();
+    const bHash = borrowerHash("borrower-8");
+    const lHash = loanHash("loan-8");
+    const maturity = await maturityAfter(90);
+
+    await loanRegistry.connect(lender).registerLoan(lHash, bHash, 100_000n, 2200, maturity, "USD");
+    await loanRegistry.connect(lender).recordRepayment(lHash, 40_000n);
+
+    await expect(loanRegistry.connect(lender).recordRepayment(lHash, 70_000n))
+      .to.be.revertedWithCustomError(loanRegistry, "RepaymentExceedsOutstanding")
+      .withArgs(lHash, 70_000n, 60_000n);
+  });
 });
