@@ -35,6 +35,7 @@ Set these `.env` fields before deploying:
 - `DEPLOYER_PRIVATE_KEY`
 - `UPGRADER_PRIVATE_KEY`
 - `ADMIN_ADDRESS`
+- `ALLOW_EOA_ADMIN` (`false` for multisig/contract-admin enforcement; set `true` only for explicit EOA override)
 - `CREDITCOIN_TESTNET_RPC`
 - `CREDITCOIN_MAINNET_RPC`
 

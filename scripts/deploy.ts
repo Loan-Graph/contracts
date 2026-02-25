@@ -48,6 +48,13 @@ async function main() {
   if (!adminAddress) {
     throw new Error("ADMIN_ADDRESS is required in environment");
   }
+  const allowEoaAdmin = process.env.ALLOW_EOA_ADMIN === "true";
+  const adminCode = await ethers.provider.getCode(adminAddress);
+  if (adminCode === "0x" && !allowEoaAdmin) {
+    throw new Error(
+      "ADMIN_ADDRESS is an EOA. Use a multisig/contract admin or set ALLOW_EOA_ADMIN=true for explicit override."
+    );
+  }
 
   const LoanRegistry = await ethers.getContractFactory("LoanRegistry");
   const loanRegistry = await upgrades.deployProxy(LoanRegistry, [adminAddress], {

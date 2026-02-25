@@ -12,6 +12,18 @@ The current suite is cleanly structured and test-covered for happy/negative path
 
 Overall risk posture (current state): **Medium-High**.
 
+## Remediation Progress (Updated)
+- Resolved:
+  - LG-01 (cross-lender unauthorized mutation)
+  - LG-02 (unbounded repayment inflation)
+  - LG-03 (passport mint for nonexistent borrower)
+  - LG-06 (missing pause/unpause events)
+- Partially resolved:
+  - LG-04 (manager burn confiscation): now requires holder allowance for third-party burn.
+  - LG-05 (governance centralization): deploy script now blocks EOA admin by default unless explicit override.
+- Remaining:
+  - Governance hardening is still operationally dependent on deployment discipline (multisig/timelock process and role lifecycle playbook).
+
 ## Methodology
 - Manual review of all in-scope contracts and deploy config.
 - Role/privilege surface mapping and state-transition review.
@@ -187,4 +199,3 @@ Overall risk posture (current state): **Medium-High**.
 - All Medium findings either resolved or formally accepted with signed risk rationale.
 - Updated tests cover all abuse scenarios listed in Test Gap Matrix.
 - Deployment script enforces governance constraints and environment validation.
-

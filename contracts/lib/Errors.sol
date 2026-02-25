@@ -23,6 +23,7 @@ abstract contract Errors {
     error ScoreOutOfRange(uint256 score);
     error PoolClosed();
     error PoolStatusUnchanged();
+    error BurnAllowanceExceeded(address owner, address spender, uint256 allowed, uint256 attempted);
     error ZeroValueNotAllowed();
     error ContractPaused();
     error ContractNotPaused();

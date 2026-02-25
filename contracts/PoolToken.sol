@@ -77,6 +77,11 @@ contract PoolToken is Initializable, ERC20Upgradeable, AccessControlUpgradeable,
     function burn(address from, uint256 amount) external onlyRoleCustom(MANAGER_ROLE) whenNotPaused {
         if (from == address(0)) revert InvalidRecipient();
         if (amount == 0) revert InvalidAmount();
+        if (from != msg.sender) {
+            uint256 allowed = allowance(from, msg.sender);
+            if (allowed < amount) revert BurnAllowanceExceeded(from, msg.sender, allowed, amount);
+            _approve(from, msg.sender, allowed - amount);
+        }
 
         _burn(from, amount);
         emit PoolBurn(from, amount);

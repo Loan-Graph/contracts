@@ -28,11 +28,21 @@ describe("PoolToken", function () {
     const { poolToken, manager, investor } = await deployCore();
 
     await poolToken.connect(manager).mint(investor.address, 500n);
+    await poolToken.connect(investor).approve(manager.address, 200n);
     await expect(poolToken.connect(manager).burn(investor.address, 200n))
       .to.emit(poolToken, "PoolBurn")
       .withArgs(investor.address, 200n);
 
     expect(await poolToken.balanceOf(investor.address)).to.eq(300n);
+  });
+
+  it("blocks manager burn without holder allowance", async function () {
+    const { poolToken, manager, investor } = await deployCore();
+
+    await poolToken.connect(manager).mint(investor.address, 500n);
+    await expect(poolToken.connect(manager).burn(investor.address, 200n))
+      .to.be.revertedWithCustomError(poolToken, "BurnAllowanceExceeded")
+      .withArgs(investor.address, manager.address, 0n, 200n);
   });
 
   it("enforces role checks with custom errors", async function () {
